@@ -1,6 +1,7 @@
 #编写自定义模板标签代码,用于处理博客页边栏
-from ..models import Article,Categoy
+from ..models import Article,Categoy,Tag
 from django import template
+from django.db.models.aggregates import Count
 
 register = template.Library()
 
@@ -16,3 +17,16 @@ def archives():
 @register.simple_tag
 def get_categories():
     return Categoy.objects.all()
+
+@register.simple_tag
+def get_tags():
+    return Tag.objects.annotate(num_posts = Count('article')).filter(num_posts__gt = 0)
+
+
+#统计个分类下的文章数
+
+@register.simple_tag()
+def get_categories():
+    #注意这里的模型名字一定为小写,gt为大于的意思，即过滤出分类数大于0的分类
+    return Categoy.objects.annotate(num_posts = Count('article')).filter(num_posts__gt =0)
+

@@ -23,9 +23,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'bnlhwp1=)yvxx+f^6ej$gfp((s$cnt^zm2%8!rv06=!2su84lh'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost ', '.zgb.abaopro.me']
+ALLOWED_HOSTS = ['127.0.0.1','localhost','.zgb.abaopro.me']
 
 
 # Application definition
@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'blog',
     'comments', #评论功能
+    'haystack',
 ]
 
 MIDDLEWARE = [
@@ -125,4 +126,13 @@ USE_TZ = False
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [ os.path.join(BASE_DIR, 'static')]  #注意加载静态时需要添加这一句
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
+#全文检索
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'blog.whoosh_cn_backends.WhooshEngine',
+        'PATH': os.path.join(BASE_DIR, 'whoosh_index'),
+    },
+}
+HAYSTACK_SEARCH_RESULTS_PER_PAGE = 5
+HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
